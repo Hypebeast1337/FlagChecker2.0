@@ -1,0 +1,6 @@
+// Use custom configuration for svgmap variables
+@use './svgMapConfig' as vars;
+
+// Import other svgmap SCSS files
+@use '@svgmap/map';
+@use '@svgmap/tooltip';

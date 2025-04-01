@@ -1,0 +1,13 @@
+@import './styles/svgMapOverrides.scss'; /* Custom SCSS overrides must come first */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #040711; /* Primary background */
+  color: #e2e8f0; /* Primary text color */
+}

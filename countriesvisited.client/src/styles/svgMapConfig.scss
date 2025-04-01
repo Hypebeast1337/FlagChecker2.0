@@ -1,0 +1,17 @@
+// Override svgmap SCSS variables
+$mapActiveStrokeColor: #2a4061 !default;
+$countryStrokeColor: #2a4061ad !important;
+$oceanColor: #040711 !important;
+$mapTooltipBackgroundColor: #2a4061 !important;
+$mapControlsBackgroundColor: #000000 !important;
+$mapControlsDisabledColor: #000000 !important;
+
+// Forward svgmap variables with overrides
+@forward '@svgmap/variables' with (
+  $mapActiveStrokeColor: $mapActiveStrokeColor,
+  $countryStrokeColor: $countryStrokeColor,
+  $oceanColor: $oceanColor,
+  $mapTooltipBackgroundColor: $mapTooltipBackgroundColor,
+  $mapControlsBackgroundColor: $mapControlsBackgroundColor,
+  $mapControlsDisabledColor: $mapControlsDisabledColor
+);
