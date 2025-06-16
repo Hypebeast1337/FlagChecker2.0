@@ -14,6 +14,11 @@ const VisitedCountriesContext = createContext<VisitedCountriesState | undefined>
 // Provider component
 export const VisitedCountriesProvider = ({ children }: { children: ReactNode }) => {
   const [visitedCountries, setVisitedCountries] = useState<{ [key: string]: { visited: number } }>({
+    PL: { visited: 1 }, // Poland
+    DE: { visited: 1 }, // Germany
+    IN: { visited: 1 }, // India
+    US: { visited: 1 }, // United States
+    FR: { visited: 0 }, // France
   });
 
   return (

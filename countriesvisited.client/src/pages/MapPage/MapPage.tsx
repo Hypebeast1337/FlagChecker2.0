@@ -1,26 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import svgMap from 'svgmap';
 import 'svgmap/dist/svgMap.min.css';
+import { useVisitedCountries } from '../../context/VisitedCountriesContext';
 
 const MapPage: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
-
-  // State to track visited countries dynamically
-  const [visitedCountries, setVisitedCountries] = useState<{ [key: string]: { visited: number } }>({
-    PL: { visited: 1 }, // Poland
-    DE: { visited: 1 }, // Germany
-    IN: { visited: 1 }, // India
-    US: { visited: 1 }, // United States
-    FR: { visited: 0 }, // France
-  });
+  const { visitedCountries, setVisitedCountries } = useVisitedCountries();
 
   useEffect(() => {
-    let mapInstance: InstanceType<typeof svgMap> | null = null; // Correctly type svgMap instance
-
-    const container = document.getElementById('svgMapContainer');
-    if (container) {
-      container.innerHTML = ''; // Clear any existing content (cleanup)
-    }
+    let mapInstance: InstanceType<typeof svgMap> | null = null;
 
     if (mapRef.current) {
       // Initialize svgMap only once
@@ -43,7 +31,6 @@ const MapPage: React.FC = () => {
         showZoomReset: true,
       });
 
-      // Attach click event listeners to paths dynamically (only once)
       const paths = document.querySelectorAll('#svgMapContainer path') as NodeListOf<SVGPathElement>;
       paths.forEach((path) => {
         path.style.cursor = 'pointer'; // Indicate interactivity
@@ -58,20 +45,20 @@ const MapPage: React.FC = () => {
         if (container) {
           container.innerHTML = ''; // Clear container content
         }
-        mapInstance = null; // Reset map instance
+        mapInstance = null;
       }
     };
   }, []); // Initialize map only once
 
   const handleCountryClick = (pathElement: SVGPathElement) => {
-    const countryCode = pathElement.id.replace('svgMapContainer-map-country-', ''); // Extract ISO code
+    const countryCode = pathElement.id.replace('svgMapContainer-map-country-', '');
 
     setVisitedCountries((prev) => {
       const isVisited = prev[countryCode]?.visited === 1;
 
       const updatedVisitedCountries = {
         ...prev,
-        [countryCode]: { visited: isVisited ? 0 : 1 }, // Toggle visited status
+        [countryCode]: { visited: isVisited ? 0 : 1 },
       };
 
       console.log(
@@ -81,8 +68,13 @@ const MapPage: React.FC = () => {
           .sort()
       );
 
-      // Dynamically update country color without reinitializing the map
-      pathElement.style.fill = isVisited ? '#222937' : '#54a4ed'; // Toggle color based on state
+      pathElement.style.fill = isVisited ? '#222937' : '#54a4ed';
+
+      // Manually hide the tooltip after clicking
+      const tooltip = document.querySelector('.svgMap-tooltip') as HTMLElement;
+      if (tooltip) {
+        tooltip.style.display = 'none';
+      }
 
       return updatedVisitedCountries;
     });
@@ -107,8 +99,8 @@ const MapPage: React.FC = () => {
           ref={mapRef}
           className="w-[70%] max-w-[900px] h-[500px] border border-gray-700 rounded-lg overflow-hidden"
           style={{
-            maxWidth: '70%', // Enforce maximum width
-            margin: '0 auto', // Center horizontally
+            maxWidth: '70%',
+            margin: '0 auto',
           }}
         />
       </div>
