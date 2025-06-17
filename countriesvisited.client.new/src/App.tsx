@@ -7,29 +7,33 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import { VisitedCountriesProvider } from "./components/countries/VisitedCountriesContext";
+import ShareHandler from './components/ShareHandler';
 
 export default function App() {
   return (
     <>
-    <VisitedCountriesProvider>
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          {/* Dashboard Layout */}
-          <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
+      <VisitedCountriesProvider>
+        <Router>
+          <ScrollToTop />
+          <Routes>
+            {/* Dashboard Layout */}
+            <Route element={<AppLayout />}>
+              <Route index path="/" element={<Home />} />
 
-            {/* Others Page */}
-            <Route path="/profile" element={<UserProfiles />} />
+              {/* Others Page */}
+              <Route path="/profile" element={<UserProfiles />} />
 
-            {/* Forms */}
-            <Route path="/form-elements" element={<FormElements />} />
-          </Route>
+              {/* Forms */}
+              <Route path="/form-elements" element={<FormElements />} />
+            </Route>
 
-          {/* Fallback Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
+            {/* Share */}
+            <Route path="/share/:encodedCountries" element={<ShareHandler />} />
+
+            {/* Fallback Route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
       </VisitedCountriesProvider>
     </>
   );

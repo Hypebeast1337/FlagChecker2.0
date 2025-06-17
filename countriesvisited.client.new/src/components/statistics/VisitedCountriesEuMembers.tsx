@@ -20,9 +20,14 @@ export default function VisitedCountriesEU() {
     ).length;
 
     const totalEUCount = EU_COUNTRIES.length;
+    const allEUVisited = visitedEUCount === totalEUCount;
 
     return (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className={`rounded-2xl border p-5 md:p-6 ${
+            allEUVisited
+                ? "border-blue-500 bg-white dark:border-blue-500 dark:bg-white/[0.03]"
+                : "border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+        }`}>
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <CurrencyEuroIcon className="size-5 text-gray-500" />
           </div>

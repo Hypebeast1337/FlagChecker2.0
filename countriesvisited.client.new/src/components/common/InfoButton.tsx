@@ -26,7 +26,7 @@ export const InfoButton: React.FC = () => {
       >
         <QuestionMarkCircleIcon className="size-5" />
       </button>
-      
+
       <Tooltip id="info-tooltip" />
 
       {/* Info Modal */}
@@ -34,7 +34,7 @@ export const InfoButton: React.FC = () => {
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
         className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl max-w-lg mx-auto mt-20 p-0 focus:outline-none"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-4 z-50"
+        overlayClassName="fixed inset-0 bg-gray-200 bg-opacity-75 dark:bg-black dark:bg-opacity-50 flex items-start justify-center p-4 z-50"
         closeTimeoutMS={200}
       >
         <div className="p-6">
@@ -63,24 +63,24 @@ export const InfoButton: React.FC = () => {
                 <strong>{t('countriesCount')}</strong> - {t('countriesCountDesc')} <a href="https://www.un.org/en/about-us/member-states">member-states (un.org)</a>
               </p>
             </div>
-            
+
             <div>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 <strong>{t('countriesArea')}</strong> - {t('countriesAreaDesc')} <a href="https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_area">area (wikipedia.org)</a>
               </p>
             </div>
-            
+
             <div>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 <strong>{t('countriesPopulation')}</strong> - {t('countriesPopulationDesc')} <a href="https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population">population (wikipedia.org)</a>
               </p>
             </div>
-            
+
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
                 <strong>{t('usedMap')}</strong> - {t('usedMapDesc')}
               </p>
-              
+
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 {t('antarcticaNote')}
               </p>

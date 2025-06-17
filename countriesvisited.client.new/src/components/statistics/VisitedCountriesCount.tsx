@@ -3,14 +3,14 @@ import { useVisitedCountries } from "../countries/VisitedCountriesContext";
 import AnimatedNumber from "react-awesome-animated-number";
 import "react-awesome-animated-number/dist/index.css";
 import { useTranslation } from 'react-i18next';
+import { CountryCountingService } from '../../services/CountryCountingService';
 
 export default function VisitedCountriesCount() {
     const { t } = useTranslation();
     const { visitedCountries } = useVisitedCountries();
 
-    const visitedCount = Object.keys(visitedCountries).filter(
-        (key) => visitedCountries[key].visited === 1
-    ).length;
+    const visitedCount = CountryCountingService.getVisitedCountriesCount(visitedCountries);
+    const totalCount = CountryCountingService.getTotalCountriesCount();
 
     return (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
@@ -30,7 +30,7 @@ export default function VisitedCountriesCount() {
                             hasComma={false}
                             size={28}
                         />{" "}
-                        / 196
+                        / {totalCount}
                     </h4>
                 </div>
             </div>

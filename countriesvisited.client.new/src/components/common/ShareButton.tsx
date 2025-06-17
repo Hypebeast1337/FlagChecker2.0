@@ -91,7 +91,7 @@ export const ShareButton: React.FC = () => {
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
         className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl max-w-lg mx-auto mt-20 p-0 focus:outline-none"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-4 z-50"
+        overlayClassName="fixed inset-0 bg-gray-200 bg-opacity-75 dark:bg-black dark:bg-opacity-50 flex items-start justify-center p-4 z-50"
         closeTimeoutMS={200}
       >
         <div className="p-6">

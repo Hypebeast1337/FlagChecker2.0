@@ -5,14 +5,24 @@ import { useTranslation } from 'react-i18next';
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
-import countryData from "../countries/data/countryData"; // Import country data
+import countryData from "../countries/data/countryData";
+
+// Define continent colors - updated to match table
+const continentColorMap: { [key: string]: string } = {
+  'Europe': '#5862f5',        // Original blue (kept the same)
+  'Asia': '#A7C7E7',          // Lighter blue
+  'Africa': '#696969',        // Darker grey
+  'Australia': '#A9A9A9',     // Grey
+  'North America': '#ee82ee', // Violet
+  'South America': '#9400D3', // Darker violet
+};
 
 export default function ContinentStatistics() {
   const { t } = useTranslation();
-  const { visitedCountries } = useVisitedCountries(); // Access visited countries context
-  const [series, setSeries] = useState<number[]>([]); // Dynamic series data for the chart
+  const { visitedCountries } = useVisitedCountries();
+  const [series, setSeries] = useState<number[]>([]);
   const [continentStats, setContinentStats] = useState<{ [key: string]: { visited: number; total: number } }>({});
-  const [visibleContinents, setVisibleContinents] = useState<string[]>([]); // Continents with at least one visited country
+  const [visibleContinents, setVisibleContinents] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   // Calculate continent data based on selected countries
@@ -30,7 +40,7 @@ export default function ContinentStatistics() {
 
     // Count visited countries per continent
     Object.keys(visitedCountries)
-      .filter((key) => visitedCountries[key].visited === 1) // Only include visited countries
+      .filter((key) => visitedCountries[key].visited === 1)
       .forEach((isoCode) => {
         const continent = countryData[isoCode]?.continent;
         if (continent) {
@@ -48,16 +58,19 @@ export default function ContinentStatistics() {
     });
 
     setContinentStats(stats);
-    setSeries(Object.values(visitedCounts)); // Set series data for the chart
+    setSeries(Object.values(visitedCounts));
 
     // Update visible continents for the legend (only those with at least one visited country)
     const visibleLabels = Object.keys(visitedCounts).filter((continent) => visitedCounts[continent] > 0);
     setVisibleContinents(visibleLabels);
   }, [visitedCountries]);
 
+  // Generate colors array based on visible continents order
+  const chartColors = visibleContinents.map(continent => continentColorMap[continent] || '#A9A9A9');
+
   // Chart options
   const options: ApexOptions = {
-    colors: ["#465FFF", "#FF4560", "#00E396", "#FEB019", "#775DD0"],
+    colors: chartColors, // Use continent-specific colors
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "donut",
@@ -73,16 +86,16 @@ export default function ContinentStatistics() {
               show: true,
               fontSize: "16px",
               fontWeight: "600",
-              color: "#1D2939",
+              color: "#000000", // Black color for both modes
               offsetY: -10,
             },
             value: {
               show: true,
               fontSize: "28px",
               fontWeight: "500",
-              color: "#1D2939",
+              color: "#000000", // Black color for both modes
               offsetY: 10,
-              formatter: (val) => `${val}`, // Display raw value (number of countries)
+              formatter: (val) => `${val}`,
             },
           },
         },
@@ -97,13 +110,17 @@ export default function ContinentStatistics() {
     legend: {
       position: "right",
       horizontalAlign: "center",
+      labels: {
+        colors: "#98a2b3", // Gray color for legend text
+        useSeriesColors: false,
+      }
     },
     stroke: {
       show: true,
       lineCap: 'butt',
       colors: ["#667085"],
       width: 1,
-      dashArray: 0, 
+      dashArray: 0,
     },
     tooltip: {
       enabled: false,
@@ -113,9 +130,9 @@ export default function ContinentStatistics() {
         },
       },
     },
-    labels: visibleContinents.map(continent => t(continent)), // Translate continent names in legend
+    labels: visibleContinents.map(continent => t(continent)),
   };
-  
+
   function closeDropdown() {
     setIsOpen(false);
   }
@@ -179,7 +196,7 @@ export default function ContinentStatistics() {
 
       {/* Second Row of Continents */}
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5 xl:py-2">
-        {['North America', 'Oceania', 'South America'].map((continent, index) => (
+        {['North America', 'Australia', 'South America'].map((continent, index) => (
           <div key={continent} className="flex items-center gap-5">
             <div>
               <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">

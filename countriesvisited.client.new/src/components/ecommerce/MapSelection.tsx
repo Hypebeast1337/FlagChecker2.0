@@ -5,22 +5,32 @@ import ReactCountryFlag from "react-country-flag";
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
 import countryData from "../countries/data/countryData";
 import { useTranslation } from 'react-i18next';
+import { CountryTranslationService } from '../../services/CountryTranslationService';
 
 export default function MapSelection() {
   const { visitedCountries, setVisitedCountries } = useVisitedCountries();
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Filter countries based on search term
+  // Filter countries based on search term (search in translated names)
   const filteredCountries = Object.keys(countryData)
     .filter(isoCode => {
-      const country = countryData[isoCode];
-      return country.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const translatedName = CountryTranslationService.getCountryName(isoCode, i18n.language);
+      const originalName = countryData[isoCode].name;
+      
+      // Search in both translated name and original name for better UX
+      return translatedName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             originalName.toLowerCase().includes(searchTerm.toLowerCase());
     })
-    .sort((a, b) => countryData[a].name.localeCompare(countryData[b].name))
+    .sort((a, b) => {
+      // Sort by translated country names
+      const nameA = CountryTranslationService.getCountryName(a, i18n.language);
+      const nameB = CountryTranslationService.getCountryName(b, i18n.language);
+      return nameA.localeCompare(nameB);
+    })
     .slice(0, 10); // Limit to 10 results for performance
 
   // Handle country selection from dropdown
@@ -92,8 +102,8 @@ export default function MapSelection() {
           {isDropdownOpen && filteredCountries.length > 0 && (
             <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
               {filteredCountries.map((isoCode) => {
-                const country = countryData[isoCode];
                 const isVisited = visitedCountries[isoCode]?.visited === 1;
+                const translatedCountryName = CountryTranslationService.getCountryName(isoCode, i18n.language);
 
                 return (
                   <div
@@ -112,7 +122,7 @@ export default function MapSelection() {
                     />
                     <div className="flex-1">
                       <span className="text-sm font-medium text-gray-800 dark:text-white/90">
-                        {country.name}
+                        {translatedCountryName}
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
                         ({isoCode})

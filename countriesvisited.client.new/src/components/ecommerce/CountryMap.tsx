@@ -2,15 +2,23 @@ import React from "react";
 import { VectorMap } from "@react-jvectormap/core";
 import { worldMill } from "@react-jvectormap/world";
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
-import countryData from "../countries/data/countryData"; // Import country data
+import countryData from "../countries/data/countryData";
+import { useTranslation } from 'react-i18next';
+import { CountryTranslationService } from '../../services/CountryTranslationService';
 
 const CountryMap: React.FC = () => {
-  const { visitedCountries, setVisitedCountries } = useVisitedCountries(); // Access context
+  const { visitedCountries, setVisitedCountries } = useVisitedCountries();
+  const { i18n } = useTranslation();
 
-  // Extract selected regions from context
-  const selectedRegions = Object.keys(visitedCountries).filter(
-    (key) => visitedCountries[key].visited === 1
-  );
+  // In your CountryMap.tsx, add the same filtering:
+
+const MAP_INCOMPATIBLE_COUNTRIES = ['VA', 'SM', 'MC', 'LI', 'AD', 'MT', 'SG'];
+
+// Extract selected regions from context (filtered for map compatibility)
+const selectedRegions = Object.keys(visitedCountries)
+  .filter((key) => visitedCountries[key].visited === 1)
+  .filter((key) => !MAP_INCOMPATIBLE_COUNTRIES.includes(key)); // Filter out problematic countries
+
 
   // Handle region selection
   const handleRegionSelected = (
@@ -19,43 +27,49 @@ const CountryMap: React.FC = () => {
     isSelected: boolean,
     selectedRegionsList: string[]
   ) => {
-    console.log("Selected Regions:", selectedRegionsList); // Log selected regions
-    console.log("Code:", code, "Is Selected:", isSelected); // Log individual country selection
+    console.log("Selected Regions:", selectedRegionsList);
+    console.log("Code:", code, "Is Selected:", isSelected);
 
-    // Update visited countries in context
     setVisitedCountries((prev) => ({
       ...prev,
-      [code]: { visited: isSelected ? 1 : 0 }, // Mark as visited or unvisited
+      [code]: { visited: isSelected ? 1 : 0 },
     }));
+  };
+
+  // Handle region tooltip with just translated country name
+  const handleRegionTipShow = (event: any, label: any, code: string) => {
+    const translatedCountryName = CountryTranslationService.getCountryName(code, i18n.language);
+    label.html(translatedCountryName);
   };
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <VectorMap
-        map={worldMill} // Use the worldMill map
-        backgroundColor="transparent" // Transparent background
-        zoomOnScroll={true} // Enable zoom on scroll
-        regionsSelectable={true} // Allow regions to be selectable
-        regionsSelectableOne={false} // Allow multiple selections
-        selectedRegions={selectedRegions} // Bind selected regions from context
-        onRegionSelected={handleRegionSelected} // Handle region selection
+        map={worldMill}
+        backgroundColor="transparent"
+        zoomOnScroll={true}
+        regionsSelectable={true}
+        regionsSelectableOne={false}
+        selectedRegions={selectedRegions}
+        onRegionSelected={handleRegionSelected}
+        onRegionTipShow={handleRegionTipShow}
         regionStyle={{
           initial: {
-            fill: "#B8E186", // Default color for unselected regions (light green)
+            fill: "#667085",
             fillOpacity: 1,
             stroke: "none",
             strokeWidth: 0,
             strokeOpacity: 0,
           },
           hover: {
-            fill: "#CA0020", // Hover color (red)
+            fill: "gray",
             cursor: "pointer",
           },
           selected: {
-            fill: "#465FFF", // Selected color (blue)
+            fill: "#465FFF",
           },
           selectedHover: {
-            fillOpacity: 0.8, // Slightly transparent when hovered and selected
+            fillOpacity: 0.8,
           },
         }}
       />
