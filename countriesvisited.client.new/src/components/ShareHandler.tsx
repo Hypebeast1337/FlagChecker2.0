@@ -70,7 +70,7 @@ const ShareHandler: React.FC = () => {
         setTimeout(() => {
           setIsLoading(false);
           navigate('/', { replace: true });
-        }, 1500);
+        }, 3000);
 
       } catch (err) {
         console.error('Error decoding share link:', err);

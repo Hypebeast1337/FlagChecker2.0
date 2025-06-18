@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { VectorMap } from "@react-jvectormap/core";
 import { worldMill } from "@react-jvectormap/world";
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
@@ -10,15 +10,16 @@ const CountryMap: React.FC = () => {
   const { visitedCountries, setVisitedCountries } = useVisitedCountries();
   const { i18n } = useTranslation();
 
-  // In your CountryMap.tsx, add the same filtering:
+  const MAP_INCOMPATIBLE_COUNTRIES = ['VA', 'SM', 'MC', 'LI', 'AD', 'MT', 'SG'];
 
-const MAP_INCOMPATIBLE_COUNTRIES = ['VA', 'SM', 'MC', 'LI', 'AD', 'MT', 'SG'];
-
-// Extract selected regions from context (filtered for map compatibility)
-const selectedRegions = Object.keys(visitedCountries)
-  .filter((key) => visitedCountries[key].visited === 1)
-  .filter((key) => !MAP_INCOMPATIBLE_COUNTRIES.includes(key)); // Filter out problematic countries
-
+  // Extract selected regions from context (filtered for map compatibility)
+  // Use useMemo to ensure we always get a new array reference when visitedCountries changes
+  const selectedRegions = useMemo(() => {
+    return Object.keys(visitedCountries)
+      .filter((key) => visitedCountries[key].visited === 1)
+      .filter((key) => !MAP_INCOMPATIBLE_COUNTRIES.includes(key))
+      .slice(); // Create a new array instance
+  }, [visitedCountries]);
 
   // Handle region selection
   const handleRegionSelected = (
@@ -29,6 +30,16 @@ const selectedRegions = Object.keys(visitedCountries)
   ) => {
     console.log("Selected Regions:", selectedRegionsList);
     console.log("Code:", code, "Is Selected:", isSelected);
+
+    // Hide tooltip when selecting a new region (not when deselecting)
+    if (isSelected) {
+      setTimeout(() => {
+        const tooltips = document.getElementsByClassName("jvectormap-tip");
+        Array.from(tooltips).forEach((el: any) => {
+          el.style.display = 'none';
+        });
+      }, 10);
+    }
 
     setVisitedCountries((prev) => ({
       ...prev,
@@ -45,6 +56,7 @@ const selectedRegions = Object.keys(visitedCountries)
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <VectorMap
+        key={selectedRegions.join(',')} // Use content-based key instead of counter
         map={worldMill}
         backgroundColor="transparent"
         zoomOnScroll={true}
