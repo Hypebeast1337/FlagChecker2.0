@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Table,
   TableBody,
@@ -10,7 +9,7 @@ import ReactCountryFlag from "react-country-flag";
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
 import countryData from "../countries/data/countryData";
 import Badge from "../ui/badge/Badge";
-import { AdjustmentsVerticalIcon, XMarkIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { AreaCalculationService } from '../../services/AreaCalculationService';

@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { VectorMap } from "@react-jvectormap/core";
 import { worldMill } from "@react-jvectormap/world";
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
-import countryData from "../countries/data/countryData";
 import { useTranslation } from 'react-i18next';
 import { CountryTranslationService } from '../../services/CountryTranslationService';
 
@@ -23,7 +22,7 @@ const CountryMap: React.FC = () => {
 
   // Handle region selection
   const handleRegionSelected = (
-    event: any,
+    _event: any,
     code: string,
     isSelected: boolean,
     selectedRegionsList: string[]
@@ -48,7 +47,7 @@ const CountryMap: React.FC = () => {
   };
 
   // Handle region tooltip with just translated country name
-  const handleRegionTipShow = (event: any, label: any, code: string) => {
+  const handleRegionTipShow = (_event: any, label: any, code: string) => {
     const translatedCountryName = CountryTranslationService.getCountryName(code, i18n.language);
     label.html(translatedCountryName);
   };
