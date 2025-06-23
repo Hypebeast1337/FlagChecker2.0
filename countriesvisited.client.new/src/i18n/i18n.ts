@@ -60,7 +60,7 @@ const resources = {
       "visitedContinents": "Visited continents",
       "visitedCountriesCount": "Visited countries",
       "euCountries": "EU countries",
-      "totalPopulation": "Total population",
+      "totalPopulation": "Total population (mln)",
       "millionAbbr": "mln",
 
       // Info Modal
@@ -148,7 +148,7 @@ const resources = {
       "visitedContinents": "Odwiedzonych kontynentów",
       "visitedCountriesCount": "Odwiedzonych krajów",
       "euCountries": "Krajów UE",
-      "totalPopulation": "Populacji łącznie",
+      "totalPopulation": "Populacji łącznie (mln)",
       "millionAbbr": "mln",
 
       // Info Modal

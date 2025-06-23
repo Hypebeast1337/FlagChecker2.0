@@ -721,3 +721,16 @@ span.flatpickr-weekday,
   @apply opacity-100;
 }
 
+/* Add this to your card components */
+.card-container {
+  min-height: 140px; /* Adjust based on your largest card */
+  display: flex;
+  flex-direction: column;
+}
+
+/* For mobile screens */
+@media (max-width: 768px) {
+  .card-container {
+    min-height: 150px; /* Slightly taller for mobile if needed */
+  }
+}
