@@ -84,6 +84,10 @@ export const InfoButton: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 {t('antarcticaNote')}
               </p>
+              
+              <p className="text-gray-600 dark:text-gray-300 pt-6 text-sm text-right">
+                wasilew.net
+              </p>
             </div>
           </div>
         </div>

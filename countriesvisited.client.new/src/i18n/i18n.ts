@@ -71,7 +71,7 @@ const resources = {
       "countriesArea": "Countries area",
       "countriesAreaDesc": "according to 'List of countries and dependencies by area' Wikipedia as of May 2025. Source:",
       "countriesPopulation": "Countries population",
-      "countriesPopulationDesc": "according to 'List of countries and dependencies by population' as of May 2025. Source:",
+      "countriesPopulationDesc": "according to 'List of countries and dependencies by population' Wikipedia as of May 2025. Source:",
       "usedMap": "Used map",
       "usedMapDesc": "Currently used map is react-jvectormap/core - does NOT contain all countries that can be selected (e.g. through typing) due to obvious limitations of this library, some countries are too small to be visible on the map, e.g. Vatican, San Marino, Singapore etc.",
       "antarcticaNote": "Antarctica is not selectable",
@@ -86,6 +86,10 @@ const resources = {
       "copy": "Copy",
       "copied": "Copied!",
 
+      //Set date functionality
+      "dateFeatureTitle": "Date setting",
+      "dateFeatureNotAvailable": "The date setting feature is not yet available. This functionality will be added in a future update.",
+      "close": "Close"
     }
   },
   pl: {
@@ -155,20 +159,25 @@ const resources = {
       "countriesArea": "Powierzchnia krajów",
       "countriesAreaDesc": "według 'List of countries and dependencies by area' Wikipedii na maj 2025. Źródło:",
       "countriesPopulation": "Populacja krajów",
-      "countriesPopulationDesc": "według 'List of countries and dependencies by population' na maj 2025. Źródło:",
+      "countriesPopulationDesc": "według 'List of countries and dependencies by population' Wikipedii na maj 2025. Źródło:",
       "usedMap": "Użyta mapa",
       "usedMapDesc": "Aktualnie używana mapa to react-jvectormap/core -  NIE zawiera w sobie wszystkich krajów, które są możliwe do wybrania (np. poprzez wpisywanie) przez oczywiste ograniczenia tej biblioteki, niektóre kraje są za małe, aby były widoczne na mapie, np. Watykan, San Marino, Singapur itd.",
       "antarcticaNote": "Antarktyda nie jest możliwa do wybrania",
 
       // Sharing functionality      
       "shareError": "Błąd linku udostępniania",
-      "goHome": "Idź do Strony Głównej", 
+      "goHome": "Idź do Strony Głównej",
       "loadingSharedCountries": "Ładowanie udostępnionych krajów...",
       "loadingCountriesDesc": "Ładowanie {{count}} krajów z udostępnionego linku",
       "shareResultsTitle": "Udostępnij",
       "shareResultsDesc": "Wyślij poniższy link, aby udostępnić swój wybór krajów",
       "copy": "Kopiuj",
       "copied": "Skopiowano!",
+
+      //Set date functionality
+      "dateFeatureTitle": "Ustawianie daty",
+      "dateFeatureNotAvailable": "Funkcja ustawiania daty nie jest jeszcze dostępna. Ta funkcjonalność zostanie dodana w przyszłej aktualizacji.",
+      "close": "Zamknij"
     }
   }
 };

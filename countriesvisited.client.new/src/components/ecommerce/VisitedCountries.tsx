@@ -16,6 +16,8 @@ import { AreaCalculationService } from '../../services/AreaCalculationService';
 import { CountryCountingService } from '../../services/CountryCountingService';
 import { CountryTranslationService } from '../../services/CountryTranslationService';
 import { ResetSelectedCountriesButton } from "../common/ResetSelectedCountriesButton";
+import Modal from 'react-modal';
+import { useState } from 'react';
 
 // Define a mapping of continents to custom badge classes
 const continentColors: { [key: string]: string } = {
@@ -30,6 +32,7 @@ const continentColors: { [key: string]: string } = {
 const VisitedCountries = () => {
   const { t, i18n } = useTranslation();
   const { visitedCountries, setVisitedCountries } = useVisitedCountries();
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
 
   // Use the service for counting
   const visitedCount = CountryCountingService.getVisitedCountriesCount(visitedCountries);
@@ -40,6 +43,16 @@ const VisitedCountries = () => {
       ...prev,
       [isoCode]: { visited: 0 }
     }));
+  };
+
+  // Handle calendar icon click
+  const handleCalendarClick = () => {
+    setIsDateModalOpen(true);
+  };
+
+  // Handle closing the modal
+  const handleCloseModal = () => {
+    setIsDateModalOpen(false);
   };
 
   return (
@@ -177,6 +190,7 @@ const VisitedCountries = () => {
                         <button
                           data-tooltip-id={`calendar-mobile-${isoCode}`}
                           data-tooltip-content={t('setVisitDate')}
+                          onClick={handleCalendarClick}
                           className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
                         >
                           <CalendarIcon className="size-4" />
@@ -299,6 +313,7 @@ const VisitedCountries = () => {
                           <button
                             data-tooltip-id={`calendar-${isoCode}`}
                             data-tooltip-content={t('setVisitDate')}
+                            onClick={handleCalendarClick}
                             className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
                           >
                             <CalendarIcon className="size-4" />
@@ -323,6 +338,57 @@ const VisitedCountries = () => {
           </Table>
         </div>
       </div>
+
+      {/* Date Feature Modal */}
+      <Modal
+        isOpen={isDateModalOpen}
+        onRequestClose={handleCloseModal}
+        className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl max-w-md mx-auto mt-20 p-0 focus:outline-none"
+        overlayClassName="fixed inset-0 bg-gray-200 bg-opacity-75 dark:bg-black dark:bg-opacity-50 flex items-start justify-center p-4 z-50"
+        closeTimeoutMS={200}
+      >
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-orange-100 dark:bg-orange-900/20 rounded-full">
+                <CalendarIcon className="size-5 text-orange-600 dark:text-orange-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+                {t('dateFeatureTitle') || 'Date Selection'}
+              </h3>
+            </div>
+            <button
+              onClick={handleCloseModal}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            >
+              <XMarkIcon className="size-5" />
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="space-y-4">
+            <div className="text-center py-4">
+              <div className="mb-3">
+                <CalendarIcon className="size-12 text-gray-400 dark:text-gray-500 mx-auto" />
+              </div>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                {t('dateFeatureNotAvailable') || 'The date selection feature is not yet available. This functionality will be added in a future update.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex justify-end mt-2 pt-2">
+            <button
+              onClick={handleCloseModal}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            >
+              {t('close') || 'Close'}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
