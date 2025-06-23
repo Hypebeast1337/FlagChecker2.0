@@ -59,7 +59,7 @@ const resources = {
       "landAreaPercentage": "% of land area",
       "visitedContinents": "Visited continents",
       "visitedCountriesCount": "Visited countries",
-      "euCountries": "European Union countries",
+      "euCountries": "EU countries",
       "totalPopulation": "Total population",
       "millionAbbr": "mln",
 
@@ -147,7 +147,7 @@ const resources = {
       "landAreaPercentage": "% powierzchni ziemi (lądu)",
       "visitedContinents": "Odwiedzonych kontynentów",
       "visitedCountriesCount": "Odwiedzonych krajów",
-      "euCountries": "Krajów Unii Europejskiej",
+      "euCountries": "Krajów UE",
       "totalPopulation": "Populacji łącznie",
       "millionAbbr": "mln",
 
