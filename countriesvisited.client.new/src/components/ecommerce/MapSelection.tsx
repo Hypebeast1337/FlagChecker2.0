@@ -74,8 +74,9 @@ export default function MapSelection() {
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
-      <div className="flex justify-between items-center">
-        <div>
+      {/* Header section - now stacked on small screens */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-start">
+        <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             {t('countriesSelection')}
           </h3>
@@ -84,7 +85,8 @@ export default function MapSelection() {
           </p>
         </div>
 
-        <div className="relative w-full max-w-[430px]" ref={dropdownRef}>
+        {/* Search input container - full width on small screens */}
+        <div className="relative w-full lg:max-w-[430px]" ref={dropdownRef}>
           <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2 z-10">
             <GlobeEuropeAfricaIcon className="size-5 text-gray-500" />
           </span>
@@ -98,9 +100,9 @@ export default function MapSelection() {
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
           />
 
-          {/* Dropdown */}
+          {/* Dropdown - positioned with more spacing */}
           {isDropdownOpen && filteredCountries.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
               {filteredCountries.map((isoCode) => {
                 const isVisited = visitedCountries[isoCode]?.visited === 1;
                 const translatedCountryName = CountryTranslationService.getCountryName(isoCode, i18n.language);
@@ -144,7 +146,7 @@ export default function MapSelection() {
 
           {/* No results message */}
           {isDropdownOpen && searchTerm.length > 0 && filteredCountries.length === 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-50 px-4 py-3">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-50 px-4 py-3">
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {t('noCountriesFound')}
               </span>
@@ -153,8 +155,8 @@ export default function MapSelection() {
         </div>
       </div>
 
-      {/* Map container */}
-      <div className="w-full h-full mt-4">
+      {/* Map container - added more top margin for better spacing */}
+      <div className="w-full h-full mt-6">
         <CountryMap />
       </div>
     </div>
