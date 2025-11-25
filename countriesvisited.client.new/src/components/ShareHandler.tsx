@@ -4,18 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useVisitedCountries } from './countries/VisitedCountriesContext'; 
 import { useTranslation } from 'react-i18next';
 import countryData from './countries/data/countryData';
-
-// Countries that exist in countryData but are NOT in jVectorMap worldMill
-const MAP_INCOMPATIBLE_COUNTRIES = [
-  'VA', // Vatican - confirmed to cause error
-  'SM', // San Marino - very small
-  'MC', // Monaco - very small  
-  'LI', // Liechtenstein - very small
-  'AD', // Andorra - very small
-  'MT', // Malta - sometimes missing
-  'SG', // Singapore - sometimes missing
-  // Note: XK (Kosovo), PS (Palestine), TW (Taiwan) work fine based on your testing
-];
+import { MapCompatibilityService } from '../services/MapCompatibilityService';
 
 const ShareHandler: React.FC = () => {
   const { encodedCountries } = useParams<{ encodedCountries: string }>();
@@ -61,7 +50,7 @@ const ShareHandler: React.FC = () => {
         setLoadedCount(validCountries.length);
         
         // Log countries that will be filtered from map
-        const mapIncompatible = validCountries.filter(code => MAP_INCOMPATIBLE_COUNTRIES.includes(code));
+        const mapIncompatible = MapCompatibilityService.getUnsupported(validCountries);
         if (mapIncompatible.length > 0) {
           console.log('Countries loaded but will be filtered from map:', mapIncompatible);
         }

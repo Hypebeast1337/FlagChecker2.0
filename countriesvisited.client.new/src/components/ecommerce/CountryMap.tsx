@@ -4,20 +4,21 @@ import { worldMill } from "@react-jvectormap/world";
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
 import { useTranslation } from 'react-i18next';
 import { CountryTranslationService } from '../../services/CountryTranslationService';
+import { MapCompatibilityService } from "../../services/MapCompatibilityService";
 
 const CountryMap: React.FC = () => {
   const { visitedCountries, setVisitedCountries } = useVisitedCountries();
   const { i18n } = useTranslation();
 
-  const MAP_INCOMPATIBLE_COUNTRIES = ['VA', 'SM', 'MC', 'LI', 'AD', 'MT', 'SG'];
-
   // Extract selected regions from context (filtered for map compatibility)
   // Use useMemo to ensure we always get a new array reference when visitedCountries changes
   const selectedRegions = useMemo(() => {
-    return Object.keys(visitedCountries)
-      .filter((key) => visitedCountries[key].visited === 1)
-      .filter((key) => !MAP_INCOMPATIBLE_COUNTRIES.includes(key))
-      .slice(); // Create a new array instance
+    const selected = Object.keys(visitedCountries).filter(
+      (key) => visitedCountries[key].visited === 1
+    );
+
+    // Only pass codes that exist in the vector map to avoid runtime errors
+    return MapCompatibilityService.filterSupported(selected);
   }, [visitedCountries]);
 
   // Handle region selection

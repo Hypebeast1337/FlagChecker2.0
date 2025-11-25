@@ -1,0 +1,50 @@
+FlagChecker 2.0 - Countries visited tracker
+===========================================
+
+What this app is
+----------------
+- React 19 + Vite + Tailwind single-page app that lets a user mark countries they have visited, see stats, and share the selection.
+- Primary client lives in `countriesvisited.client.new/`. `countriesvisited.client/` is the legacy scaffold and `countriesvisited.api/` is a default ASP.NET template that is not wired up.
+- Data is fully client side; there is no API call flow today.
+
+How it works (happy path)
+-------------------------
+- The home route (`/`) renders `Home` with a map selector, stats cards, a visited table, and continent distribution.
+- `VisitedCountriesProvider` (context) stores `{ [iso2]: { visited: 0 | 1 } }`. Everything reads from that single source of truth.
+- Country selection:
+  - `MapSelection` exposes both a search box (country data + i18n-iso-countries) and the interactive vector map.
+  - `CountryMap` renders `@react-jvectormap/world` (`worldMill`) and toggles visited state via `onRegionSelected`.
+  - The map only accepts ISO codes that exist in the map file; unsupported codes are filtered out before being sent to the map.
+- Stats and tables:
+  - `VisitedCountries*` cards use `CountryCountingService` and `AreaCalculationService` to compute counts, area totals/percent, EU membership count, and population (in millions).
+  - `VisitedCountries` table lists selected countries with flag, continent badge, area, and actions (remove, future date picker).
+  - `ContinentStatistics` uses ApexCharts to show a donut of visited continents.
+- Sharing:
+  - `ShareButton` base64-encodes the visited ISO codes and builds a `/share/<encoded>` link.
+  - `ShareHandler` decodes the link, rebuilds visited state, and redirects home (showing a loading/error screen while doing so).
+- Internationalization: English and Polish via `i18next` (`src/i18n/i18n.ts`). Country names are translated via `CountryTranslationService` (i18n-iso-countries with per-locale fallback to `countryData`).
+
+Key data and services
+---------------------
+- `src/components/countries/data/countryData.ts`: 197 entries with continent, area (km2), population, and `isCountry` flag for territories.
+- `AreaCalculationService`: sums visited area and world area, returns percents.
+- `CountryCountingService`: counts visited countries/continents, separates territories.
+- `MapCompatibilityService`: single place to derive the list of ISO codes supported by the vector map, and to filter unsupported ones.
+
+Notable limitations
+-------------------
+- The `worldMill` map file excludes 29 micro-states/territories (including MV, MT, VA, SM, SG, LI, MC, AD, etc.). Selecting these via search/share still updates stats, but the map cannot draw them and they are filtered before rendering.
+- Antarctica is intentionally not selectable.
+- Date-setting UI is stubbed; the modal is informational only.
+
+Running the app locally
+-----------------------
+- From `countriesvisited.client.new/`: `npm install` then `npm run dev` for a dev server, `npm run build` for production bundles.
+- No env vars are required. The API project is unused; you can ignore it unless you intend to add server features.
+
+Files to look at first
+----------------------
+- `src/App.tsx` and `src/pages/Dashboard/Home.tsx` - routing and page composition.
+- `src/components/ecommerce/MapSelection.tsx` and `src/components/ecommerce/CountryMap.tsx` - selection UI and map logic.
+- `src/components/ecommerce/VisitedCountries.tsx` - visited list UI.
+- `src/services/*.ts` - utility logic for counts, area, translations, and map compatibility.
