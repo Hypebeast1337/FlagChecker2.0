@@ -1,7 +1,7 @@
 // src/components/ShareHandler.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useVisitedCountries } from './countries/VisitedCountriesContext'; 
+import { useVisitedCountries } from './countries/VisitedCountriesContext';
 import { useTranslation } from 'react-i18next';
 import countryData from './countries/data/countryData';
 import { MapCompatibilityService } from '../services/MapCompatibilityService';
@@ -26,35 +26,47 @@ const ShareHandler: React.FC = () => {
       try {
         // Decode the base64 string
         const decodedString = atob(encodedCountries);
-        
-        // Split by comma to get country ISO codes
-        const countryIsoCodes = decodedString.split(',').filter(code => code.trim() !== '');
-        
+
+        // Split by comma to get country entries (format: "PL:2023" or "PL")
+        const countryEntries = decodedString.split(',').filter(entry => entry.trim() !== '');
+
+        // Parse entries to extract ISO code and optional year
+        const parsedEntries = countryEntries.map(entry => {
+          const [isoCode, yearStr] = entry.split(':');
+          return {
+            isoCode: isoCode.trim(),
+            year: yearStr ? parseInt(yearStr, 10) : undefined
+          };
+        });
+
         // Filter out countries that don't exist in countryData
-        const validCountries = countryIsoCodes.filter(isoCode => countryData[isoCode]);
-        
-        if (validCountries.length === 0) {
+        const validEntries = parsedEntries.filter(entry => countryData[entry.isoCode]);
+
+        if (validEntries.length === 0) {
           setError('No valid countries found in share link');
           setIsLoading(false);
           return;
         }
 
-        // Create the visited countries object (include ALL valid countries)
-        const newVisitedCountries: { [key: string]: { visited: number } } = {};
-        validCountries.forEach(isoCode => {
-          newVisitedCountries[isoCode] = { visited: 1 };
+        // Create the visited countries object with year data
+        const newVisitedCountries: { [key: string]: { visited: number; year?: number } } = {};
+        validEntries.forEach(entry => {
+          newVisitedCountries[entry.isoCode] = {
+            visited: 1,
+            ...(entry.year && { year: entry.year })
+          };
         });
 
         // Update the context
         setVisitedCountries(newVisitedCountries);
-        setLoadedCount(validCountries.length);
-        
+        setLoadedCount(validEntries.length);
+
         // Log countries that will be filtered from map
-        const mapIncompatible = MapCompatibilityService.getUnsupported(validCountries);
+        const mapIncompatible = MapCompatibilityService.getUnsupported(validEntries.map(e => e.isoCode));
         if (mapIncompatible.length > 0) {
           console.log('Countries loaded but will be filtered from map:', mapIncompatible);
         }
-        
+
         // Small delay to show the loading state, then redirect to home
         setTimeout(() => {
           setIsLoading(false);
@@ -71,7 +83,6 @@ const ShareHandler: React.FC = () => {
     loadSharedCountries();
   }, [encodedCountries, setVisitedCountries, navigate]);
 
-  // ... rest of your component remains the same
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">

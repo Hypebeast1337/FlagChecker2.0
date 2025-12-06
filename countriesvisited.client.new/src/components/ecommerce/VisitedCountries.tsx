@@ -219,7 +219,12 @@ const VisitedCountries = () => {
                         >
                           <CalendarIcon className="size-4" />
                         </button>
-                        <Tooltip id={`calendar-mobile-${isoCode}`} />
+                        <Tooltip
+                          id={`calendar-mobile-${isoCode}`}
+                          delayHide={0}
+                          openEvents={{ mouseenter: true, focus: false }}
+                          closeEvents={{ mouseleave: true, blur: true, click: true }}
+                        />
 
                         <button
                           data-tooltip-id={`remove-mobile-${isoCode}`}
@@ -229,7 +234,12 @@ const VisitedCountries = () => {
                         >
                           <XMarkIcon className="size-4" />
                         </button>
-                        <Tooltip id={`remove-mobile-${isoCode}`} />
+                        <Tooltip
+                          id={`remove-mobile-${isoCode}`}
+                          delayHide={0}
+                          openEvents={{ mouseenter: true, focus: false }}
+                          closeEvents={{ mouseleave: true, blur: true, click: true }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -348,7 +358,12 @@ const VisitedCountries = () => {
                           >
                             <CalendarIcon className="size-4" />
                           </button>
-                          <Tooltip id={`calendar-${isoCode}`} />
+                          <Tooltip
+                            id={`calendar-${isoCode}`}
+                            delayHide={0}
+                            openEvents={{ mouseenter: true, focus: false }}
+                            closeEvents={{ mouseleave: true, blur: true, click: true }}
+                          />
 
                           <button
                             data-tooltip-id={`remove-${isoCode}`}
@@ -358,7 +373,12 @@ const VisitedCountries = () => {
                           >
                             <XMarkIcon className="size-4" />
                           </button>
-                          <Tooltip id={`remove-${isoCode}`} />
+                          <Tooltip
+                            id={`remove-${isoCode}`}
+                            delayHide={0}
+                            openEvents={{ mouseenter: true, focus: false }}
+                            closeEvents={{ mouseleave: true, blur: true, click: true }}
+                          />
                         </div>
                       </TableCell>
                     </TableRow>

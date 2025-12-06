@@ -16,18 +16,23 @@ export const ShareButton: React.FC = () => {
     (key) => visitedCountries[key]?.visited === 1
   ).length;
 
-  // Generate the share link
+    // Generate the share link
   const generateShareLink = () => {
-    // Get selected country ISO codes
+    // Get selected country ISO codes with optional year
     const selectedCountries = Object.keys(visitedCountries)
-      .filter(isoCode => visitedCountries[isoCode]?.visited === 1);
-    
+      .filter(isoCode => visitedCountries[isoCode]?.visited === 1)
+      .map(isoCode => {
+        const year = visitedCountries[isoCode]?.year;
+        // Format: "PL:2023" if year exists, "PL" if no year
+        return year ? `${isoCode}:${year}` : isoCode;
+      });
+
     // Create comma-separated string
     const countriesString = selectedCountries.join(',');
-    
+
     // Encode to base64
     const encodedCountries = btoa(countriesString);
-    
+
     // Generate the share URL
     const currentUrl = window.location.origin;
     return `${currentUrl}/share/${encodedCountries}`;

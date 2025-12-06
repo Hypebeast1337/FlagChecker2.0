@@ -46,7 +46,10 @@ const CountryMap: React.FC = () => {
 
     setVisitedCountries((prev) => ({
       ...prev,
-      [code]: { visited: isSelected ? 1 : 0 },
+      [code]: {
+        ...prev[code],  // Preserve existing fields like year
+        visited: isSelected ? 1 : 0
+      },
     }));
   };
 
