@@ -5,18 +5,18 @@ import { useVisitedCountries } from "../countries/VisitedCountriesContext";
 import { useTranslation } from 'react-i18next';
 import { CountryTranslationService } from '../../services/CountryTranslationService';
 import { MapCompatibilityService } from "../../services/MapCompatibilityService";
+import { useCountryNotification } from "../notifications/CountryNotificationContext";
 
 const CountryMap: React.FC = () => {
-  const { visitedCountries, setVisitedCountries } = useVisitedCountries();
+  const { visitedCountries, setVisitedCountries, mapKey } = useVisitedCountries();
+  const { showNotification } = useCountryNotification();
   const { i18n } = useTranslation();
 
   // Extract selected regions from context (filtered for map compatibility)
-  // Use useMemo to ensure we always get a new array reference when visitedCountries changes
   const selectedRegions = useMemo(() => {
     const selected = Object.keys(visitedCountries).filter(
       (key) => visitedCountries[key].visited === 1
     );
-
     // Only pass codes that exist in the vector map to avoid runtime errors
     return MapCompatibilityService.filterSupported(selected);
   }, [visitedCountries]);
@@ -26,11 +26,8 @@ const CountryMap: React.FC = () => {
     _event: any,
     code: string,
     isSelected: boolean,
-    selectedRegionsList: string[]
+    _selectedRegionsList: string[]
   ) => {
-    console.log("Selected Regions:", selectedRegionsList);
-    console.log("Code:", code, "Is Selected:", isSelected);
-
     // Hide tooltip when selecting a new region (not when deselecting)
     if (isSelected) {
       setTimeout(() => {
@@ -40,6 +37,12 @@ const CountryMap: React.FC = () => {
         });
       }, 10);
     }
+
+    // Get country name for notification
+    const countryName = CountryTranslationService.getCountryName(code, i18n.language);
+    
+    // Show notification
+    showNotification(code, countryName, isSelected ? 'added' : 'removed');
 
     setVisitedCountries((prev) => ({
       ...prev,
@@ -56,7 +59,7 @@ const CountryMap: React.FC = () => {
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <VectorMap
-        key={selectedRegions.join(',')} // Use content-based key instead of counter
+        key={mapKey}
         map={worldMill}
         backgroundColor="transparent"
         zoomOnScroll={true}

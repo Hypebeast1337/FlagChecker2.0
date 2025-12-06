@@ -16,7 +16,7 @@ import { AreaCalculationService } from '../../services/AreaCalculationService';
 import { CountryCountingService } from '../../services/CountryCountingService';
 import { CountryTranslationService } from '../../services/CountryTranslationService';
 import { ResetSelectedCountriesButton } from "../common/ResetSelectedCountriesButton";
-import Modal from 'react-modal';
+import YearPicker from '../common/YearPicker';
 import { useState } from 'react';
 
 // Define a mapping of continents to custom badge classes
@@ -31,28 +31,33 @@ const continentColors: { [key: string]: string } = {
 
 const VisitedCountries = () => {
   const { t, i18n } = useTranslation();
-  const { visitedCountries, setVisitedCountries } = useVisitedCountries();
-  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const { visitedCountries, removeCountry, setCountryYear } = useVisitedCountries();
+  const [yearPickerOpen, setYearPickerOpen] = useState(false);
+  const [selectedCountryForYear, setSelectedCountryForYear] = useState<string | null>(null);
 
   // Use the service for counting
   const visitedCount = CountryCountingService.getVisitedCountriesCount(visitedCountries);
 
-  // Handle removing a country from visited list
-  const handleRemoveCountry = (isoCode: string) => {
-    setVisitedCountries(prev => ({
-      ...prev,
-      [isoCode]: { visited: 0 }
-    }));
+  // Handle calendar click
+  const handleCalendarClick = (isoCode: string) => {
+    setSelectedCountryForYear(isoCode);
+    setYearPickerOpen(true);
   };
 
-  // Handle calendar icon click
-  const handleCalendarClick = () => {
-    setIsDateModalOpen(true);
+  const handleYearSelect = (year: number | undefined) => {
+    if (selectedCountryForYear) {
+      setCountryYear(selectedCountryForYear, year);
+    }
   };
 
-  // Handle closing the modal
-  const handleCloseModal = () => {
-    setIsDateModalOpen(false);
+  const handleCloseYearPicker = () => {
+    setYearPickerOpen(false);
+    setSelectedCountryForYear(null);
+  };
+
+  const getSelectedCountryName = () => {
+    if (!selectedCountryForYear) return '';
+    return CountryTranslationService.getCountryName(selectedCountryForYear, i18n.language);
   };
 
   return (
@@ -98,6 +103,19 @@ const VisitedCountries = () => {
           border-color: #e066e0;
         }
         
+        .year-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          padding: 0.125rem 0.5rem;
+          font-size: 0.625rem;
+          font-weight: 600;
+          border-radius: 9999px;
+          background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+          color: white;
+          box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+        }
+
         .continent-south-america {
           background-color: #9400D3;
           color: #ffffff;
@@ -129,6 +147,7 @@ const VisitedCountries = () => {
               const continentClass = continentColors[countryData[isoCode]?.continent] || "continent-australia";
               const isCountry = countryData[isoCode]?.isCountry ?? true;
               const areaKm = countryData[isoCode]?.areaKm || 0;
+              const visitYear = visitedCountries[isoCode]?.year;
               const areaPercentage = AreaCalculationService.getFormattedPercentage(
                 AreaCalculationService.getCountryAreaPercentage(areaKm),
                 3
@@ -149,6 +168,11 @@ const VisitedCountries = () => {
                         <h4 className="font-medium text-gray-800 dark:text-white/90 text-sm">
                           {translatedCountryName} ({isoCode})
                         </h4>
+                        {visitYear && (
+                          <span className="year-badge">
+                            {visitYear}
+                          </span>
+                        )}
                         {!isCountry && (
                           <span
                             data-tooltip-id={`nc-mobile-${isoCode}`}
@@ -190,7 +214,7 @@ const VisitedCountries = () => {
                         <button
                           data-tooltip-id={`calendar-mobile-${isoCode}`}
                           data-tooltip-content={t('setVisitDate')}
-                          onClick={handleCalendarClick}
+                          onClick={() => handleCalendarClick(isoCode)}
                           className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
                         >
                           <CalendarIcon className="size-4" />
@@ -200,7 +224,7 @@ const VisitedCountries = () => {
                         <button
                           data-tooltip-id={`remove-mobile-${isoCode}`}
                           data-tooltip-content={t('removeCountry')}
-                          onClick={() => handleRemoveCountry(isoCode)}
+                          onClick={() => removeCountry(isoCode)}
                           className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors dark:hover:text-red-400 dark:hover:bg-red-900/20"
                         >
                           <XMarkIcon className="size-4" />
@@ -252,7 +276,8 @@ const VisitedCountries = () => {
                 .map((isoCode) => {
                   const continentClass = continentColors[countryData[isoCode]?.continent] || "continent-australia";
                   const isCountry = countryData[isoCode]?.isCountry ?? true;
-                  
+                  const visitYear = visitedCountries[isoCode]?.year;
+
                   const areaKm = countryData[isoCode]?.areaKm || 0;
                   const areaPercentage = AreaCalculationService.getFormattedPercentage(
                     AreaCalculationService.getCountryAreaPercentage(areaKm),
@@ -280,6 +305,11 @@ const VisitedCountries = () => {
                           <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                             {translatedCountryName} ({isoCode})
                           </p>
+                          {visitYear && (
+                            <span className="year-badge">
+                              {visitYear}
+                            </span>
+                          )}
                           {!isCountry && (
                             <span
                               data-tooltip-id={`nc-${isoCode}`}
@@ -313,7 +343,7 @@ const VisitedCountries = () => {
                           <button
                             data-tooltip-id={`calendar-${isoCode}`}
                             data-tooltip-content={t('setVisitDate')}
-                            onClick={handleCalendarClick}
+                            onClick={() => handleCalendarClick(isoCode)}
                             className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors dark:hover:text-blue-400 dark:hover:bg-blue-900/20"
                           >
                             <CalendarIcon className="size-4" />
@@ -323,7 +353,7 @@ const VisitedCountries = () => {
                           <button
                             data-tooltip-id={`remove-${isoCode}`}
                             data-tooltip-content={t('removeCountry')}
-                            onClick={() => handleRemoveCountry(isoCode)}
+                            onClick={() => removeCountry(isoCode)}
                             className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors dark:hover:text-red-400 dark:hover:bg-red-900/20"
                           >
                             <XMarkIcon className="size-4" />
@@ -339,56 +369,15 @@ const VisitedCountries = () => {
         </div>
       </div>
 
-      {/* Date Feature Modal */}
-      <Modal
-        isOpen={isDateModalOpen}
-        onRequestClose={handleCloseModal}
-        className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl max-w-md mx-auto mt-20 p-0 focus:outline-none"
-        overlayClassName="fixed inset-0 bg-gray-200 bg-opacity-75 dark:bg-black dark:bg-opacity-50 flex items-start justify-center p-4 z-50"
-        closeTimeoutMS={200}
-      >
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-orange-100 dark:bg-orange-900/20 rounded-full">
-                <CalendarIcon className="size-5 text-orange-600 dark:text-orange-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-                {t('dateFeatureTitle') || 'Date Selection'}
-              </h3>
-            </div>
-            <button
-              onClick={handleCloseModal}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-            >
-              <XMarkIcon className="size-5" />
-            </button>
-          </div>
-
-          {/* Content */}
-          <div className="space-y-4">
-            <div className="text-center py-4">
-              <div className="mb-3">
-                <CalendarIcon className="size-12 text-gray-400 dark:text-gray-500 mx-auto" />
-              </div>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                {t('dateFeatureNotAvailable') || 'The date selection feature is not yet available. This functionality will be added in a future update.'}
-              </p>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="flex justify-end mt-2 pt-2">
-            <button
-              onClick={handleCloseModal}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              {t('close') || 'Close'}
-            </button>
-          </div>
-        </div>
-      </Modal>
+      {/* Year Picker Modal */}
+      <YearPicker
+        isOpen={yearPickerOpen}
+        onClose={handleCloseYearPicker}
+        onSelectYear={handleYearSelect}
+        selectedYear={selectedCountryForYear ? visitedCountries[selectedCountryForYear]?.year : undefined}
+        countryCode={selectedCountryForYear || ''}
+        countryName={getSelectedCountryName()}
+      />
     </>
   );
 };

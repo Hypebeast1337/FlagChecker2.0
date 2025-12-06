@@ -27,7 +27,12 @@ export const InfoButton: React.FC = () => {
         <QuestionMarkCircleIcon className="size-5" />
       </button>
 
-      <Tooltip id="info-tooltip" />
+      <Tooltip
+        id="info-tooltip"
+        delayHide={0}
+        openEvents={{ mouseenter: true, focus: false }}
+        closeEvents={{ mouseleave: true, blur: true, click: true }}
+      />
 
       {/* Info Modal */}
       <Modal

@@ -84,7 +84,12 @@ export const ShareButton: React.FC = () => {
         <ShareIcon className="size-5" />
       </button>
       
-      <Tooltip id="share-tooltip" />
+      <Tooltip
+        id="share-tooltip"
+        delayHide={0}
+        openEvents={{ mouseenter: true, focus: false }}
+        closeEvents={{ mouseleave: true, blur: true, click: true }}
+      />
 
       {/* Share Modal */}
       <Modal

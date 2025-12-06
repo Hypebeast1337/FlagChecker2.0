@@ -41,7 +41,12 @@ export const ThemeToggleButton: React.FC = () => {
           />
         </svg>
       </button>
-      <Tooltip id="theme-toggle-tooltip" />
+      <Tooltip
+        id="theme-toggle-tooltip"
+        delayHide={0}
+        openEvents={{ mouseenter: true, focus: false }}
+        closeEvents={{ mouseleave: true, blur: true, click: true }}
+      />
     </>
   );
 };

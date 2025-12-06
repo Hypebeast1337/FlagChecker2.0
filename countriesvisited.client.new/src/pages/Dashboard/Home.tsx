@@ -1,5 +1,6 @@
 import ContinentStatistics from "../../components/ecommerce/ContinentStatistics";
 import VisitedCountries from "../../components/ecommerce/VisitedCountries";
+import CountriesByYear from "../../components/countries/CountriesByYear";
 import VisitedCountriesCount from "../../components/statistics/VisitedCountriesCount";
 import VisitedCountriesArea from "../../components/statistics/VisitedCountriesArea";
 import VisitedCountriesAreaPercentage from "../../components/statistics/VisitedCountriesAreaPercentage";
@@ -121,6 +122,17 @@ export default function Home() {
                         className="col-span-12 xl:col-span-5"
                     >
                         <ContinentStatistics />
+                    </motion.div>
+                )}
+
+                {visitedCount >= 1 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 2 }}
+                        className="col-span-12"
+                    >
+                        <CountriesByYear />
                     </motion.div>
                 )}
             </div>

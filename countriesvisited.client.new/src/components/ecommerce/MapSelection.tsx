@@ -6,9 +6,11 @@ import { useVisitedCountries } from "../countries/VisitedCountriesContext";
 import countryData from "../countries/data/countryData";
 import { useTranslation } from 'react-i18next';
 import { CountryTranslationService } from '../../services/CountryTranslationService';
+import { useCountryNotification } from '../notifications/CountryNotificationContext';
 
 export default function MapSelection() {
   const { visitedCountries, setVisitedCountries } = useVisitedCountries();
+  const { showNotification } = useCountryNotification();
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { t, i18n } = useTranslation();
@@ -36,6 +38,9 @@ export default function MapSelection() {
   // Handle country selection from dropdown
   const handleCountrySelect = (isoCode: string) => {
     const isCurrentlyVisited = visitedCountries[isoCode]?.visited === 1;
+    const translatedCountryName = CountryTranslationService.getCountryName(isoCode, i18n.language);
+    // Show notification
+    showNotification(isoCode, translatedCountryName, isCurrentlyVisited ? 'removed' : 'added');
 
     setVisitedCountries(prev => ({
       ...prev,

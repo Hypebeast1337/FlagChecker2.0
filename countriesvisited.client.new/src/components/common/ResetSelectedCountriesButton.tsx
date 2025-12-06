@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
 export const ResetSelectedCountriesButton: React.FC = () => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { setVisitedCountries } = useVisitedCountries();
+  const { resetCountries } = useVisitedCountries();
 
   const handleResetClick = () => {
     setIsModalOpen(true);
@@ -21,7 +21,7 @@ export const ResetSelectedCountriesButton: React.FC = () => {
 
   const handleConfirmReset = () => {
     // Reset all countries to unvisited
-    setVisitedCountries({});
+    resetCountries();
     setIsModalOpen(false);
   };
 
@@ -40,7 +40,12 @@ export const ResetSelectedCountriesButton: React.FC = () => {
         <ArchiveBoxXMarkIcon className="size-5" />
       </button>
       
-      <Tooltip id="reset-countries-tooltip" />
+      <Tooltip
+        id="reset-countries-tooltip"
+        delayHide={0}
+        openEvents={{ mouseenter: true, focus: false }}
+        closeEvents={{ mouseleave: true, blur: true, click: true }}
+      />
 
       {/* Confirmation Modal */}
       <Modal

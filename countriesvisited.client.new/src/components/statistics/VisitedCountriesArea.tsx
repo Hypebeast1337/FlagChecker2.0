@@ -1,45 +1,48 @@
-import { GlobeAmericasIcon } from '@heroicons/react/24/outline';
+import { MapIcon } from '@heroicons/react/24/outline';
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
 import countryData from "../countries/data/countryData";
-import AnimatedNumber from "react-awesome-animated-number";
-import "react-awesome-animated-number/dist/index.css";
 import { useTranslation } from 'react-i18next';
+import StatCard from './StatCard';
 
 export default function VisitedCountriesArea() {
-    const { t } = useTranslation();
-    const { visitedCountries } = useVisitedCountries();
+  const { t, i18n } = useTranslation();
+  const { visitedCountries } = useVisitedCountries();
 
-    const totalArea = Object.keys(visitedCountries).reduce((sum, key) => {
-        if (visitedCountries[key].visited === 1 && countryData[key]) {
-            return sum + countryData[key].areaKm;
-        }
-        return sum;
-    }, 0);
+  const totalArea = Object.keys(visitedCountries).reduce((sum, key) => {
+    if (visitedCountries[key].visited === 1 && countryData[key]) {
+      return sum + countryData[key].areaKm;
+    }
+    return sum;
+  }, 0);
 
-    return (
-        <div className="card-container rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            
-            {/* Icon and Label Row */}
-            <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
-                    <GlobeAmericasIcon className="size-5 text-gray-500" />
-                </div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {t('landAreaKm')}
-                </span>
-            </div>
+  const getSubtitle = () => {
+    const areaInMillions = totalArea / 1_000_000;
+    if (i18n.language === 'pl') {
+      if (totalArea === 0) return "Zacznij zbierac kilometry!";
+      if (areaInMillions < 1) return "Pierwsze tysiace km2!";
+      if (areaInMillions < 5) return "Wiecej niz Polska!";
+      if (areaInMillions < 10) return "Jak cala Europa!";
+      if (areaInMillions < 20) return "Ogromny obszar!";
+      return "Niesamowity zasieg!";
+    }
+    if (totalArea === 0) return "Start collecting kilometers!";
+    if (areaInMillions < 1) return "First thousands of km2!";
+    if (areaInMillions < 5) return "Bigger than Germany!";
+    if (areaInMillions < 10) return "Size of Europe!";
+    if (areaInMillions < 20) return "Massive territory!";
+    return "Incredible coverage!";
+  };
 
-            {/* Numbers Row - Full Width */}
-            <div className="w-full">
-                <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
-                    <AnimatedNumber 
-                        value={totalArea} 
-                        duration={1000}
-                        hasComma={true}
-                        size={28}
-                    />
-                </h4>
-            </div>
-        </div>
-    );
+  return (
+    <StatCard
+      theme="area"
+      icon={<MapIcon className="w-6 h-6" />}
+      label={t('landAreaKm')}
+      value={totalArea}
+      suffix=" km²"
+      showProgress={false}
+      subtitle={getSubtitle()}
+      compact={true}
+    />
+  );
 }

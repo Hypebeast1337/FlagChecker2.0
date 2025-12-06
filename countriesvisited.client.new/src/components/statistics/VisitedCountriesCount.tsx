@@ -1,42 +1,47 @@
-import { ChartPieIcon } from '@heroicons/react/24/outline';
+import { FlagIcon } from '@heroicons/react/24/outline';
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
-import AnimatedNumber from "react-awesome-animated-number";
-import "react-awesome-animated-number/dist/index.css";
 import { useTranslation } from 'react-i18next';
 import { CountryCountingService } from '../../services/CountryCountingService';
+import StatCard from './StatCard';
 
 export default function VisitedCountriesCount() {
-    const { t } = useTranslation();
-    const { visitedCountries } = useVisitedCountries();
+  const { t, i18n } = useTranslation();
+  const { visitedCountries } = useVisitedCountries();
 
-    const visitedCount = CountryCountingService.getVisitedCountriesCount(visitedCountries);
-    const totalCount = CountryCountingService.getTotalCountriesCount();
+  const visitedCount = CountryCountingService.getVisitedCountriesCount(visitedCountries);
+  const totalCount = CountryCountingService.getTotalCountriesCount();
+  const percentage = (visitedCount / totalCount) * 100;
 
-    return (
-        <div className="card-container rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            
-            {/* Icon and Label Row */}
-            <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
-                    <ChartPieIcon className="size-5 text-gray-500" />
-                </div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {t('visitedCountriesCount')}
-                </span>
-            </div>
+  const getSubtitle = () => {
+    if (i18n.language === 'pl') {
+      if (visitedCount === 0) return "Pierwsza flaga czeka!";
+      if (percentage < 5) return "Dopiero zaczynasz!";
+      if (percentage < 15) return "Swietny poczatek!";
+      if (percentage < 30) return "Robisz postepy!";
+      if (percentage < 50) return "Pol swiata przed Toba!";
+      if (percentage < 75) return "Niesamowite!";
+      if (percentage < 100) return "Prawie mistrz!";
+      return "Legendarny podruznik!";
+    }
+    if (visitedCount === 0) return "Your first flag awaits!";
+    if (percentage < 5) return "Just getting started!";
+    if (percentage < 15) return "Great beginning!";
+    if (percentage < 30) return "Making progress!";
+    if (percentage < 50) return "Half the world awaits!";
+    if (percentage < 75) return "Incredible explorer!";
+    if (percentage < 100) return "Almost legendary!";
+    return "Legendary traveler!";
+  };
 
-            {/* Numbers Row - Full Width */}
-            <div className="w-full">
-                <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
-                    <AnimatedNumber 
-                        value={visitedCount} 
-                        duration={1000}
-                        hasComma={false}
-                        size={28}
-                    />{" "}
-                    / {totalCount}
-                </h4>
-            </div>
-        </div>
-    );
+  return (
+    <StatCard
+      theme="countries"
+      icon={<FlagIcon className="w-6 h-6" />}
+      label={t('visitedCountriesCount')}
+      value={visitedCount}
+      maxValue={totalCount}
+      subtitle={getSubtitle()}
+      isComplete={visitedCount === totalCount}
+    />
+  );
 }

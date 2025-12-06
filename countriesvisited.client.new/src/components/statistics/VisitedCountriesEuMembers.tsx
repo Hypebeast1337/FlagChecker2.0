@@ -1,8 +1,7 @@
-import { CurrencyEuroIcon } from '@heroicons/react/24/outline';
+import { StarIcon } from '@heroicons/react/24/outline';
 import { useVisitedCountries } from "../countries/VisitedCountriesContext";
-import AnimatedNumber from "react-awesome-animated-number";
-import "react-awesome-animated-number/dist/index.css";
 import { useTranslation } from 'react-i18next';
+import StatCard from './StatCard';
 
 const EU_COUNTRIES = [
   "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", 
@@ -12,45 +11,43 @@ const EU_COUNTRIES = [
 ];
 
 export default function VisitedCountriesEU() {
-    const { t } = useTranslation();
-    const { visitedCountries } = useVisitedCountries();
+  const { t, i18n } = useTranslation();
+  const { visitedCountries } = useVisitedCountries();
 
-    const visitedEUCount = Object.keys(visitedCountries).filter(
-        (key) => visitedCountries[key].visited === 1 && EU_COUNTRIES.includes(key)
-    ).length;
+  const visitedEUCount = Object.keys(visitedCountries).filter(
+    (key) => visitedCountries[key].visited === 1 && EU_COUNTRIES.includes(key)
+  ).length;
 
-    const totalEUCount = EU_COUNTRIES.length;
-    const allEUVisited = visitedEUCount === totalEUCount;
+  const totalEUCount = EU_COUNTRIES.length;
+  const allEUVisited = visitedEUCount === totalEUCount;
 
-    return (
-        <div className={`card-container rounded-2xl border p-5 md:p-6 ${
-            allEUVisited
-                ? "border-blue-500 bg-white dark:border-blue-500 dark:bg-white/[0.03]"
-                : "border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-        }`}>
-          
-          {/* Icon and Label Row */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
-              <CurrencyEuroIcon className="size-5 text-gray-500" />
-            </div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {t('euCountries')}
-            </span>
-          </div>
+  const getSubtitle = () => {
+    const percentage = (visitedEUCount / totalEUCount) * 100;
+    if (i18n.language === 'pl') {
+      if (visitedEUCount === 0) return "Odkryj Europe!";
+      if (percentage < 25) return "Europejski poczatek!";
+      if (percentage < 50) return "Rosnie kolekcja!";
+      if (percentage < 75) return "Europejski ekspert!";
+      if (percentage < 100) return "Prawie wszystkie!";
+      return "Mistrz Europy!";
+    }
+    if (visitedEUCount === 0) return "Discover Europe!";
+    if (percentage < 25) return "European beginning!";
+    if (percentage < 50) return "Collection growing!";
+    if (percentage < 75) return "European expert!";
+    if (percentage < 100) return "Almost complete!";
+    return "EU Master!";
+  };
 
-          {/* Numbers Row - Full Width */}
-          <div className="w-full">
-            <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
-              <AnimatedNumber 
-                value={visitedEUCount} 
-                duration={1000}
-                hasComma={false}
-                size={28}
-              />{" "}
-              / {totalEUCount}
-            </h4>
-          </div>
-        </div>
-    );
+  return (
+    <StatCard
+      theme="eu"
+      icon={<StarIcon className="w-6 h-6" />}
+      label={t('euCountries')}
+      value={visitedEUCount}
+      maxValue={totalEUCount}
+      subtitle={getSubtitle()}
+      isComplete={allEUVisited}
+    />
+  );
 }

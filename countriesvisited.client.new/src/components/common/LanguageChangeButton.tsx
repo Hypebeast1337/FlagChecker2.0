@@ -26,7 +26,12 @@ export const LanguageChangeButton: React.FC = () => {
           {isPolish ? 'PL' : 'ENG'}
         </span>
       </button>
-      <Tooltip id="language-tooltip" />
+      <Tooltip
+        id="language-tooltip"
+        delayHide={0}
+        openEvents={{ mouseenter: true, focus: false }}
+        closeEvents={{ mouseleave: true, blur: true, click: true }}
+      />
     </>
   );
 };
